@@ -1,0 +1,55 @@
+Comandos
+
+-> Load Image
+   docker-compose up -d
+
+-> docker-compose exec nginx apk add bash //Install Bash
+-> docker-compose exec nginx bash //Open Bash
+-> apk add vim  //Install Vim(Editor)
+
+Default Files Nginx Config:
+    -> Inside bash: vim /etc/nginx/nginx.conf  //Main
+    -> Inside bash: vim /etc/nginx/conf.d/default.conf //Secundary -> Edit
+    -> nginx -t //Check file
+
+In Node1 Server:
+
+    -> docker-compose up -d
+    -> docker-compose exec node1 apk add bash vim
+    -> docker-compose exec node1 bash
+    -> Inside Bash: vim /usr/share/nginx/html/index.html:
+        -> <h1>Node1</h1>
+
+In Nginx Server
+    
+    -> Inside bash: vim /etc/nginx/conf.d/default.conf :
+            location / {
+                proxy_pass http://node1;
+            }
+        -> nginx -t
+        -> nginx -s reload
+
+
+In Node2 Server:
+
+    -> docker-compose up -d
+    -> docker-compose exec node2 apk add bash vim
+    -> docker-compose exec node2 bash
+    -> Inside Bash: vim /usr/share/nginx/html/index.html:
+        -> <h1>Node2</h1>
+
+In Nginx Server
+    
+    -> Inside bash: vim /etc/nginx/conf.d/default.conf :
+            upstream nodes{ //LoadBalancer
+                server node1;
+                server node2;
+            }
+            server{
+                location / {
+                    proxy_pass http://nodes; //LoadBalancer Serve
+                }
+                ...
+            }
+        -> nginx -t
+        -> nginx -s reload
