@@ -42,7 +42,7 @@ In Nginx Server
     
     -> Inside bash: vim /etc/nginx/conf.d/default.conf :
             upstream nodes{ //LoadBalancer
-                server node1;
+                server node1 weight=2; //Definindo o peso do servidor (Para mais requisições)
                 server node2;
             }
             server{
